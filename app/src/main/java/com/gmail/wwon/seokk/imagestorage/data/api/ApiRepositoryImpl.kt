@@ -1,21 +1,22 @@
 package com.gmail.wwon.seokk.imagestorage.data.api
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.gmail.wwon.seokk.imagestorage.data.DataResult
 import com.gmail.wwon.seokk.imagestorage.data.api.models.ReqThumbnail
+import com.gmail.wwon.seokk.imagestorage.data.cache.CacheRepository
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepository
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepositoryImpl
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.HeaderAndThumbnails
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
-import com.gmail.wwon.seokk.imagestorage.utils.ImageLoader
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.lang.Exception
+import java.net.URL
 
 @RequiresApi(Build.VERSION_CODES.M)
 class ApiRepositoryImpl constructor(
@@ -46,9 +47,7 @@ class ApiRepositoryImpl constructor(
                         if(imageList.meta.totalCount > 0) {
                             localRepository.saveHeader(request, imageList.meta, LocalRepositoryImpl.IMAGE)
                             imageList.images.forEach { image ->
-                                ImageLoader.loadImage(image.thumbnailUrl) {
-                                    thumbnails.add(Thumbnail(image.docUrl, it!!, request.query, image.datetime))
-                                }
+                                thumbnails.add(Thumbnail(image.thumbnailUrl, request.query, image.datetime))
                             }
                         }
                     }
@@ -59,9 +58,7 @@ class ApiRepositoryImpl constructor(
                         if(vclipList.meta.totalCount > 0) {
                             localRepository.saveHeader(request, vclipList.meta, LocalRepositoryImpl.VCLIP)
                             vclipList.vclips.forEach { vclip ->
-                                ImageLoader.loadImage(vclip.thumbnail) {
-                                    thumbnails.add(Thumbnail(vclip.url, it!!, request.query, vclip.datetime))
-                                }
+                                thumbnails.add(Thumbnail(vclip.thumbnail, request.query, vclip.datetime))
                             }
                         }
                     }
@@ -80,4 +77,5 @@ class ApiRepositoryImpl constructor(
             emit(DataResult.Loading(false))
         }
     }.flowOn(ioDispatcher)
+
 }

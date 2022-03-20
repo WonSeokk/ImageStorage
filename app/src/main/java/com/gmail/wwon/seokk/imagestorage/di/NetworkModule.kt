@@ -16,6 +16,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -26,11 +27,15 @@ object NetworkModule {
     private const val BASE_URL = "https://dapi.kakao.com/"
     private const val API_KEY = "KakaoAK eb2c0115f96f8c83b74ca425b7bdb5be"
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Api
+
     @Singleton
     @Provides
     fun provideApiRepository(
         application: Application,
-        @Singleton apiService: ApiService,
+        @Api apiService: ApiService,
         localRepository: LocalRepository,
         ioDispatcher: CoroutineDispatcher
     ): ApiRepository {
@@ -40,6 +45,7 @@ object NetworkModule {
     }
 
     @Singleton
+    @Api
     @Provides
     fun provideApiService() : ApiService {
         return Retrofit.Builder()

@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalDatabase
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepository
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepositoryImpl
-import com.gmail.wwon.seokk.imagestorage.data.database.dao.ThumbnailDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +16,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalModule {
-    
+
     @Singleton
     @Provides
     fun provideDataBase(@ApplicationContext context: Context): LocalDatabase {
@@ -39,8 +38,4 @@ object LocalModule {
         )
     }
 
-//
-//    @Singleton
-//    @Provides
-//    fun provideThumbnailDao(localDatabase: LocalDatabase): ThumbnailDao = localDatabase.thumbnailDao()
 }

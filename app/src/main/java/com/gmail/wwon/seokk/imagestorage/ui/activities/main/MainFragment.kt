@@ -70,19 +70,6 @@ class MainFragment: Fragment() {
                 layoutManager = GridLayoutManager(context, 3)
                 addItemDecoration(GridSpacingItemDecoration(3, 5))
                 adapter = thumbnailAdapter
-//                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                        super.onScrolled(recyclerView, dx, dy)
-//                        val layoutManager = GridLayoutManager::class.cast(recyclerView.layoutManager)
-//                        val totalItemCount = layoutManager.itemCount
-//                        val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
-//                        if (lastVisible >= totalItemCount - 1) {
-//                            this@MainFragment.mainViewModel.apply {
-//                                scope.launch { searchThumbnail(request.query,true) }
-//                            }
-//                        }
-//                    }
-//                })
             }
 
             layoutSwipe.setOnRefreshListener {

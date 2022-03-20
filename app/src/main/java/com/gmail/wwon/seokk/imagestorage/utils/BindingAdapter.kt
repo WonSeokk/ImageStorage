@@ -27,8 +27,5 @@ fun TextInputLayout.setEndIconClick(onClickListener: View.OnClickListener) {
     setEndIconOnClickListener(onClickListener)
 }
 
-@BindingAdapter("android:setImageBitmap")
-fun AppCompatImageView.setBitmap(bitmap: Bitmap) = setImageBitmap(bitmap)
-
 @BindingAdapter("android:setSpinnerColor")
 fun SwipeRefreshLayout.setSpinner(color: Int) = setColorSchemeColors(color, color, color)
