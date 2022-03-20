@@ -1,9 +1,12 @@
 package com.gmail.wwon.seokk.imagestorage.di
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.gmail.wwon.seokk.imagestorage.data.api.ApiRepository
 import com.gmail.wwon.seokk.imagestorage.data.api.ApiRepositoryImpl
 import com.gmail.wwon.seokk.imagestorage.data.api.ApiService
+import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,21 +19,23 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
+@RequiresApi(Build.VERSION_CODES.M)
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     private const val BASE_URL = "https://dapi.kakao.com/"
-    private const val API_KEY = "eb2c0115f96f8c83b74ca425b7bdb5be"
+    private const val API_KEY = "KakaoAK eb2c0115f96f8c83b74ca425b7bdb5be"
 
     @Singleton
     @Provides
     fun provideApiRepository(
         application: Application,
         @Singleton apiService: ApiService,
+        localRepository: LocalRepository,
         ioDispatcher: CoroutineDispatcher
     ): ApiRepository {
         return ApiRepositoryImpl(
-            application, apiService, ioDispatcher
+            application, apiService, localRepository, ioDispatcher
         )
     }
 

@@ -11,13 +11,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NetworkManager @Inject constructor(@ApplicationContext context: Context) {
+class NetworkManager @Inject constructor(@ApplicationContext private val context: Context) {
 
     //네트워크 상태 체크
     @RequiresApi(Build.VERSION_CODES.M)
-    fun checkNetworkState(context: Context): Boolean {
-        val connectivityManager: ConnectivityManager =
-            context.getSystemService(ConnectivityManager::class.java)
+    fun checkNetworkState(): Boolean {
+        val connectivityManager: ConnectivityManager = context.getSystemService(ConnectivityManager::class.java)
         val network: Network = connectivityManager.activeNetwork ?: return false
         val actNetwork: NetworkCapabilities =
             connectivityManager.getNetworkCapabilities(network) ?: return false

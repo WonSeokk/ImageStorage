@@ -5,7 +5,6 @@
     tools:context=".ui.activities.main.MainActivity">
 
     <data>
-        <import type="android.view.View" />
         <variable
             name="mainViewModel"
             type="com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel" />

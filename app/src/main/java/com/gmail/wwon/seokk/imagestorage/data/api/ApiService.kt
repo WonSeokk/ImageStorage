@@ -13,7 +13,7 @@ interface ApiService {
     suspend fun getImages(
         @Query("query") query: String,
         @Query("sort") sort: String? = "recency",
-        @Query("query") page: Int? = 1,
+        @Query("page") page: Int? = 1,
         @Query("size") size: Int? = 15
     ): ImageList
 
@@ -22,7 +22,7 @@ interface ApiService {
     suspend fun getVclips(
         @Query("query") query: String,
         @Query("sort") sort: String? = "recency",
-        @Query("query") page: Int? = 1,
+        @Query("page") page: Int? = 1,
         @Query("size") size: Int? = 15
     ): VclipList
 

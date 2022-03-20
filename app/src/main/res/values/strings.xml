@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Image Storage</string>
-    <string name="title_search">검색</string>
+    <string name="title_search">검색 결과</string>
     <string name="title_storage">내 보관함</string>
+    <string name="text_search">검색</string>
 
-    <string name="empty_search">검색 된 결과가 없어요!</string>
+    <string name="empty_search">검색 결과가 없어요!</string>
     <string name="empty_storage">보관함이 비어있어요!</string>
+
+    <string name="msg_search_fill">검색어를 입력 해주세요.</string>
 </resources>

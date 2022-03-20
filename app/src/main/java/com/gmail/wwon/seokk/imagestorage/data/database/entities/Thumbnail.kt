@@ -17,7 +17,8 @@ import java.util.*
     )]
 )
 data class Thumbnail (
-    @PrimaryKey var image: Bitmap? = null,
+    @PrimaryKey val url: String,
+    var image: Bitmap,
     var keyword: String = "",
     var date: Date = Date()
 )

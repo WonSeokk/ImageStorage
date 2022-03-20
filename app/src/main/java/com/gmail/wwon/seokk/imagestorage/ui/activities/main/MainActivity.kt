@@ -19,23 +19,24 @@ class MainActivity: AppCompatActivity() {
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private val mainViewModel: MainViewModel by viewModels()
-    private val pageList: List<Tab> = listOf(Tab(resources.getString(R.string.title_search), MainFragment.SEARCH_PAGE),
-        Tab(resources.getString(R.string.title_storage), MainFragment.STORAGE_PAGE))
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var pagerAdapter: ViewPagerAdapter
+    private lateinit var pageList: List<Tab>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        pageList = listOf(Tab(resources.getString(R.string.title_search), MainFragment.SEARCH_PAGE), Tab(resources.getString(R.string.title_storage), MainFragment.STORAGE_PAGE))
 
         binding.apply {
             lifecycleOwner = this@MainActivity
             mainViewModel = this@MainActivity.mainViewModel
 
             viewPager.apply {
-                adapter = pagerAdapter
+                this@MainActivity.pagerAdapter = ViewPagerAdapter(this@MainActivity)
+                adapter = this@MainActivity.pagerAdapter
             }
             TabLayoutMediator(tab, viewPager) { tab, position -> tab.text = pageList[position].title }.attach()
         }

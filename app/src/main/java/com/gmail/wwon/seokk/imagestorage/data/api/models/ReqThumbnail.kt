@@ -7,8 +7,12 @@ package com.gmail.wwon.seokk.imagestorage.data.api.models
  * @param size: 한 페이지에 보여질 문서 수, 1~30 사이의 값, 기본 값 15
  */
 data class ReqThumbnail (
-    val query: String,
+    var query: String,
     val sort: String? = "recency",
-    val page: Int? = 1,
+    var page: Int = 1,
     val size: Int? = 15
-)
+) {
+    companion object {
+        val EMPTY = ReqThumbnail("","recency", 1, 15)
+    }
+}

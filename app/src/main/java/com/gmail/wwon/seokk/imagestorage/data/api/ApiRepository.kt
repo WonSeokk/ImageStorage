@@ -6,5 +6,5 @@ import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
 import kotlinx.coroutines.flow.Flow
 
 interface ApiRepository {
-    suspend fun getThumbnails(request: ReqThumbnail): Flow<DataResult<List<Thumbnail>>>
+    suspend fun getThumbnails(request: ReqThumbnail, isPage: Boolean): Flow<DataResult<List<Thumbnail>>>
 }
