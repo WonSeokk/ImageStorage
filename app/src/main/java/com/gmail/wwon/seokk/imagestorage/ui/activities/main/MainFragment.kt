@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.gmail.wwon.seokk.imagestorage.R
 import com.gmail.wwon.seokk.imagestorage.databinding.FragmentMainBinding
 import com.gmail.wwon.seokk.imagestorage.ui.activities.main.adapter.ThumbnailAdapter
 import com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel
@@ -19,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.reflect.cast
+
 
 @AndroidEntryPoint
 class MainFragment: Fragment() {
@@ -54,6 +53,7 @@ class MainFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         viewDataBinding = FragmentMainBinding.inflate(inflater, container, false)
+        thumbnailAdapter = ThumbnailAdapter(this@MainFragment.mainViewModel)
         return viewDataBinding.root
     }
 
@@ -62,44 +62,63 @@ class MainFragment: Fragment() {
         viewDataBinding.apply {
             lifecycleOwner = this@MainFragment.viewLifecycleOwner
             mainViewModel = this@MainFragment.mainViewModel
-            thumbnailAdapter = ThumbnailAdapter(this@MainFragment.mainViewModel)
             inputSearch.visibility = (page == SEARCH_PAGE).toVisibility()
 
             thumbnailRecycler.apply {
-                itemAnimator = null
                 layoutManager = GridLayoutManager(context, 3)
                 addItemDecoration(GridSpacingItemDecoration(3, 5))
                 adapter = thumbnailAdapter
             }
+        }
 
+        mainViewModel.apply {
+            thumbnailList.observe( this@MainFragment.viewLifecycleOwner) {
+                if(it.isEmpty()) viewDataBinding.emptyList.apply {
+                    text = context.getString(R.string.empty_search)
+                    visibility = View.GONE
+                }
+                thumbnailAdapter.update(it)
+            }
+        }
+
+        when(page) {
+            SEARCH_PAGE -> bindSearch()
+            STORAGE_PAGE -> bindStorage()
+        }
+
+    }
+
+    //검색 Fragment
+    private fun bindSearch() {
+        viewDataBinding.apply {
+            //당겨서 새로고침
             layoutSwipe.setOnRefreshListener {
                 this@MainFragment.mainViewModel.apply {
-                    scope.launch { searchThumbnail(searchText.value!!, false) }
+                    scope.launch { searchThumbnail(searchText.value!!, false, null) }
                 }
             }
-
             //스크롤 이벤트
             scrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, oldScrollY ->
                 if(v.getChildAt(v.childCount - 1) != null) {
                     if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) && scrollY > oldScrollY) {
                         this@MainFragment.mainViewModel.apply {
-                            scope.launch { searchThumbnail(request.query,true) }
+                            scope.launch { searchThumbnail(request.query,true, null) }
                         }
                     }
                 }
             })
-
+            //스크롤 Top 확인
             scrollView.viewTreeObserver.addOnScrollChangedListener {
                 layoutSwipe.isEnabled = (scrollView.scrollY == 0)
             }
-
-        }
-
-        mainViewModel.apply {
-            thumbnailList.observe( this@MainFragment.viewLifecycleOwner) {
-                if(page == SEARCH_PAGE)
-                    thumbnailAdapter.update(it)
-            }
         }
     }
+
+    //보관함 Fragment
+    private fun bindStorage() {
+        viewDataBinding.apply {
+            layoutSwipe.isEnabled = false
+        }
+    }
+
 }

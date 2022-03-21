@@ -1,6 +1,9 @@
 package com.gmail.wwon.seokk.imagestorage.ui.activities.main
 
+import android.content.Context
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -13,6 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {
@@ -41,6 +45,13 @@ class MainActivity: AppCompatActivity() {
             TabLayoutMediator(tab, viewPager) { tab, position -> tab.text = pageList[position].title }.attach()
         }
     }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        return true
+    }
+
 
     private inner class ViewPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = pageList.size

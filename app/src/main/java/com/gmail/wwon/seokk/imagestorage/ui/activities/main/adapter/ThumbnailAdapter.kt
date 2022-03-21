@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.gmail.wwon.seokk.imagestorage.data.ImageLoader
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
 import com.gmail.wwon.seokk.imagestorage.databinding.ItemThumbnailBinding
 import com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel

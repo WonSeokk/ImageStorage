@@ -19,5 +19,6 @@ import java.util.*
 data class Thumbnail (
     @PrimaryKey val url: String,
     var keyword: String = "",
-    var date: Date = Date()
+    var date: Date = Date(),
+    var isStored: Boolean = false
 )

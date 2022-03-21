@@ -12,15 +12,20 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class ImageStorageApp: Application() {
     lateinit var networkManager: NetworkManager
-    lateinit var memoryCache: MemoryCache
-    lateinit var diskCache: DiskCache
     lateinit var imageLoader: ImageLoader
+    private lateinit var memoryCache: MemoryCache
+    private lateinit var diskCache: DiskCache
+    private lateinit var cacheRepository: CacheRepository
 
     override fun onCreate() {
         super.onCreate()
         networkManager = NetworkManager(this)
         memoryCache = MemoryCache(CacheModule.CACHE_SIZE)
         diskCache = DiskCache(this)
-        imageLoader = ImageLoader(CacheRepository(diskCache, memoryCache))
+        cacheRepository = CacheRepository(diskCache, memoryCache)
+        imageLoader = ImageLoader(cacheRepository)
+
+        //캐시 초기화
+        cacheRepository.clear()
     }
 }

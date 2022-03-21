@@ -1,9 +1,6 @@
 package com.gmail.wwon.seokk.imagestorage.data.cache
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import kotlinx.coroutines.*
-import java.net.URL
 
 class CacheRepository constructor(
     private val diskCache: DiskCache,
@@ -14,6 +11,7 @@ class CacheRepository constructor(
         diskCache.put(url,bitmap)
     }
 
+    //메모리캐시 -> 디스크캐시 차례대로 확인
     override fun get(url: String): Bitmap? {
         return memoryCache.get(url)?:diskCache.get(url)
     }

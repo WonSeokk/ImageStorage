@@ -8,10 +8,11 @@
         <entry key="..\:/projects/android/ImageStorage/app/src/main/res/drawable/ic_bookmark.xml" value="0.207" />
         <entry key="..\:/projects/android/ImageStorage/app/src/main/res/drawable/ic_launcher_background.xml" value="0.175" />
         <entry key="..\:/projects/android/ImageStorage/app/src/main/res/drawable/ic_search.xml" value="0.2185" />
+        <entry key="..\:/projects/android/ImageStorage/app/src/main/res/drawable/ic_search_image.xml" value="0.214" />
         <entry key="..\:/projects/android/ImageStorage/app/src/main/res/layout/activity_main.xml" value="0.19947916666666668" />
         <entry key="..\:/projects/android/ImageStorage/app/src/main/res/layout/fragment_main.xml" value="0.19947916666666668" />
         <entry key="..\:/projects/android/ImageStorage/app/src/main/res/layout/item_main.xml" value="0.19947916666666668" />
-        <entry key="..\:/projects/android/ImageStorage/app/src/main/res/layout/item_thumbnail.xml" value="0.18" />
+        <entry key="..\:/projects/android/ImageStorage/app/src/main/res/layout/item_thumbnail.xml" value="0.25" />
       </map>
     </option>
   </component>

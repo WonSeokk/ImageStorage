@@ -56,6 +56,8 @@ class LocalRepositoryImpl constructor(
 
     override suspend fun saveThumbnails(thumbnails: List<Thumbnail>) = thumbnailDao.insertThumbnails(thumbnails)
 
+    override suspend fun clearHeader() = thumbnailDao.clearHeader()
+
     suspend fun checkHeaders() {
         thumbnailDao.getHeaders().forEach {
             checkHeaderTime(it)

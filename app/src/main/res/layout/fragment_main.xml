@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:endIconOnClickListener="@{() -> mainViewModel.searchThumbnail(mainViewModel.searchText, false)}"
+            android:endIconOnClickListener="@{(view) -> mainViewModel.searchThumbnail(mainViewModel.searchText, false, view)}"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_search"
             app:endIconTint="@color/black_white"
@@ -32,8 +32,11 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/text_search"
                 android:maxLines="1"
+                android:onKeyListener="@{mainViewModel.keySearch()}"
                 android:text="@={mainViewModel.searchText}"
-                android:textSize="@dimen/font_15sp" />
+                android:textSize="@dimen/font_15sp"
+                android:imeOptions="actionSearch"
+                android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -67,6 +70,7 @@
                             android:nestedScrollingEnabled="false"
                             tools:listitem="@layout/item_thumbnail" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <TextView
                         android:id="@+id/empty_list"
                         android:layout_width="wrap_content"

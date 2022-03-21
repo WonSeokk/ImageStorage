@@ -33,22 +33,19 @@ class DiskCache @Inject constructor(@ApplicationContext private val context: Con
 
     override fun put(url: String, bitmap: Bitmap) {
         val key = keyForDisk(url)
-        var editor: DiskLruCache.Editor? = null
-        try {
-            editor = cache.edit(key)
-            if (editor == null) {
-                return
-            }
-            if (writeBitmapToFile(bitmap, editor)) {
-                cache.flush()
-                editor.commit()
-            } else {
-                editor.abort()
-            }
-        } catch (e: Exception) {
+        cache.edit(key)?.let {
             try {
-                editor?.abort()
-            } catch (ignored: Exception) {
+                if (writeBitmapToFile(bitmap, it)) {
+                    cache.flush()
+                    it.commit()
+                } else {
+                    it.abort()
+                }
+            } catch (e: Exception) {
+                try {
+                    it?.abort()
+                } catch (ignored: Exception) {
+                }
             }
         }
     }

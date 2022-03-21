@@ -14,4 +14,6 @@ interface LocalRepository {
     suspend fun saveHeader(request: ReqThumbnail, meta: Meta, part: String)
 
     suspend fun saveThumbnails(thumbnails: List<Thumbnail>)
+
+    suspend fun clearHeader()
 }
