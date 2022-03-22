@@ -37,7 +37,7 @@ class MainFragment: Fragment() {
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private val mainViewModel: MainViewModel by activityViewModels()
-    private lateinit var viewDataBinding: FragmentMainBinding
+    private var viewDataBinding: FragmentMainBinding? = null
     private lateinit var thumbnailAdapter: ThumbnailAdapter
     private lateinit var page: String
 
@@ -53,13 +53,14 @@ class MainFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         viewDataBinding = FragmentMainBinding.inflate(inflater, container, false)
-        thumbnailAdapter = ThumbnailAdapter(this@MainFragment.mainViewModel)
-        return viewDataBinding.root
+        thumbnailAdapter = ThumbnailAdapter(mainViewModel)
+        return viewDataBinding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewDataBinding.apply {
+
+        viewDataBinding?.apply {
             lifecycleOwner = this@MainFragment.viewLifecycleOwner
             mainViewModel = this@MainFragment.mainViewModel
             inputSearch.visibility = (page == SEARCH_PAGE).toVisibility()
@@ -71,16 +72,6 @@ class MainFragment: Fragment() {
             }
         }
 
-        mainViewModel.apply {
-            thumbnailList.observe( this@MainFragment.viewLifecycleOwner) {
-                if(it.isEmpty()) viewDataBinding.emptyList.apply {
-                    text = context.getString(R.string.empty_search)
-                    visibility = View.GONE
-                }
-                thumbnailAdapter.update(it)
-            }
-        }
-
         when(page) {
             SEARCH_PAGE -> bindSearch()
             STORAGE_PAGE -> bindStorage()
@@ -88,13 +79,23 @@ class MainFragment: Fragment() {
 
     }
 
+    //메모리 누수 방지
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewDataBinding = null
+    }
+
     //검색 Fragment
     private fun bindSearch() {
-        viewDataBinding.apply {
+        viewDataBinding?.apply {
             //당겨서 새로고침
             layoutSwipe.setOnRefreshListener {
                 this@MainFragment.mainViewModel.apply {
-                    scope.launch { searchThumbnail(searchText.value!!, false, null) }
+                    scope.launch { searchThumbnail(request.query,
+                        isPage = false,
+                        isSwipe = true,
+                        view = null
+                    ) }
                 }
             }
             //스크롤 이벤트
@@ -102,7 +103,11 @@ class MainFragment: Fragment() {
                 if(v.getChildAt(v.childCount - 1) != null) {
                     if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) && scrollY > oldScrollY) {
                         this@MainFragment.mainViewModel.apply {
-                            scope.launch { searchThumbnail(request.query,true, null) }
+                            scope.launch { searchThumbnail(request.query,
+                                isPage = true,
+                                isSwipe = false,
+                                view = null
+                            ) }
                         }
                     }
                 }
@@ -112,12 +117,38 @@ class MainFragment: Fragment() {
                 layoutSwipe.isEnabled = (scrollView.scrollY == 0)
             }
         }
+        mainViewModel.apply {
+            isProgress.observe(this@MainFragment.viewLifecycleOwner) {
+                if(!it) viewDataBinding!!.scrollView.fullScroll(NestedScrollView.FOCUS_UP)
+            }
+            thumbnailList.observe( this@MainFragment.viewLifecycleOwner) {
+                viewDataBinding!!.emptyList.apply {
+                    if(it.isEmpty()) {
+                        text = context.getString(R.string.empty_search)
+                        visibility = View.VISIBLE
+                    } else visibility = View.GONE
+                }
+                thumbnailAdapter.update(it)
+            }
+        }
     }
 
     //보관함 Fragment
     private fun bindStorage() {
-        viewDataBinding.apply {
+        viewDataBinding?.apply {
             layoutSwipe.isEnabled = false
+        }
+
+        mainViewModel.apply {
+            storageList.observe( this@MainFragment.viewLifecycleOwner) {
+                viewDataBinding!!.emptyList.apply {
+                    if(it.isEmpty()) {
+                        text = context.getString(R.string.empty_storage)
+                        visibility = View.VISIBLE
+                    } else visibility = View.GONE
+                }
+                thumbnailAdapter.update(it)
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.gmail.wwon.seokk.imagestorage.data.database.dao
 import androidx.room.*
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Header
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.HeaderAndThumbnails
+import com.gmail.wwon.seokk.imagestorage.data.database.entities.Storage
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
 
 @Dao
@@ -31,5 +32,17 @@ interface ThumbnailDao {
 
     @Transaction
     @Query("SELECT * FROM header WHERE keyword = :keyword")
-    suspend fun getHeaderAndThumbnails(keyword: String) : HeaderAndThumbnails?
+    suspend fun getHeaderAndThumbnails(keyword: String): HeaderAndThumbnails?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertStorage(storage: Storage)
+
+    @Query("DELETE FROM storage WHERE url = :url")
+    suspend fun deleteStorageByURL(url: String)
+
+    @Query("SELECT * FROM storage")
+    suspend fun getStorages(): List<Storage>?
+
+    @Query("SELECT * FROM storage WHERE url = :url")
+    suspend fun getStorageByURL(url: String): Storage?
 }

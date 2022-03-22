@@ -25,7 +25,5 @@ class ImageStorageApp: Application() {
         cacheRepository = CacheRepository(diskCache, memoryCache)
         imageLoader = ImageLoader(cacheRepository)
 
-        //캐시 초기화
-        cacheRepository.clear()
     }
 }

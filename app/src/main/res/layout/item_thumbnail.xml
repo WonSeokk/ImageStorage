@@ -5,10 +5,6 @@
 
     <data>
         <variable
-            name="mainViewModel"
-            type="com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel" />
-
-        <variable
             name="thumbnail"
             type="com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail" />
     </data>
@@ -50,6 +46,7 @@
                     android:dateFormat="@{thumbnail.date}"
                     android:textSize="@dimen/font_10sp"
                     android:textColor="@android:color/white"
+                    android:toVisible="@{thumbnail.keyword != ``}"
                     tools:text="99.01.01 00:00"/>
             </FrameLayout>
 
@@ -65,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_bookmark"
-                    app:tint="@color/primaryColor"/>
+                    android:setSrc="@{thumbnail.isStored}"/>
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

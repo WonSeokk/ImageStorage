@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:endIconOnClickListener="@{(view) -> mainViewModel.searchThumbnail(mainViewModel.searchText, false, view)}"
+            android:endIconOnClickListener="@{(view) -> mainViewModel.searchThumbnail(mainViewModel.searchText, false, false, view)}"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_search"
             app:endIconTint="@color/black_white"
@@ -46,30 +46,26 @@
             android:setSpinnerColor="@{@color/primaryColor}"
             app:layout_constraintTop_toBottomOf="@id/input_search"
             app:layout_constraintBottom_toTopOf="@id/progress_page"
-            app:refreshing="@{mainViewModel.isPaging}">
+            app:refreshing="@{mainViewModel.isSwiping}">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:descendantFocusability="blocksDescendants"
                     android:background="@color/white_black">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/thumbnail_recycler"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/thumbnail_recycler"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false"
-                            tools:listitem="@layout/item_thumbnail" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/item_thumbnail" />
 
                     <TextView
                         android:id="@+id/empty_list"
@@ -92,6 +88,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             style="?android:attr/progressBarStyle"
             tools:visibility="visible"/>
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:toVisible="@{mainViewModel.isProgress}"
+            style="?android:attr/progressBarStyle"
+            tools:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -6,6 +6,7 @@ import com.gmail.wwon.seokk.imagestorage.data.api.models.ReqThumbnail
 import com.gmail.wwon.seokk.imagestorage.data.database.dao.ThumbnailDao
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Header
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.HeaderAndThumbnails
+import com.gmail.wwon.seokk.imagestorage.data.database.entities.Storage
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
 import com.gmail.wwon.seokk.imagestorage.utils.compareDate
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,15 +24,17 @@ class LocalRepositoryImpl constructor(
         const val VCLIP = "VCLIP"
     }
 
-    override suspend fun getThumbnails(keyword: String): DataResult<HeaderAndThumbnails> = withContext(ioDispatcher) {
+    override suspend fun getThumbnails(keyword: String): HeaderAndThumbnails = withContext(ioDispatcher) {
         thumbnailDao.getHeaderAndThumbnails(keyword)?.let {
-            if(checkHeaderTime(it.header))
-                return@withContext DataResult.Success(it)
+            if(checkHeaderTime(it.header)) {
+                it.thumbnails.map { m -> m.isStored = getStorageByURL(m.url) != null }
+                return@withContext it
+            }
         }
-        return@withContext DataResult.Success(HeaderAndThumbnails.EMPTY)
+        return@withContext HeaderAndThumbnails.EMPTY
     }
 
-    override suspend fun saveHeader(request: ReqThumbnail, meta: Meta, part: String) {
+    override suspend fun saveHeader(request: ReqThumbnail, meta: Meta, part: String) = withContext(ioDispatcher) {
         thumbnailDao.getHeaderByKey(request.query)?.let {
             when(part) {
                 IMAGE -> {
@@ -44,7 +47,7 @@ class LocalRepositoryImpl constructor(
                 }
             }
             it.lastDate = Date()
-            return thumbnailDao.updateHeader(it)
+            return@withContext thumbnailDao.updateHeader(it)
         }
         val newHeader: Header = when(part) {
             IMAGE ->  Header(request.query, request.page, 0, meta.isEnd, false, Date())
@@ -54,9 +57,9 @@ class LocalRepositoryImpl constructor(
         thumbnailDao.insertHeader(newHeader)
     }
 
-    override suspend fun saveThumbnails(thumbnails: List<Thumbnail>) = thumbnailDao.insertThumbnails(thumbnails)
+    override suspend fun saveThumbnails(thumbnails: List<Thumbnail>) = withContext(ioDispatcher) { thumbnailDao.insertThumbnails(thumbnails) }
 
-    override suspend fun clearHeader() = thumbnailDao.clearHeader()
+    override suspend fun clearHeader() = withContext(ioDispatcher) { thumbnailDao.clearHeader() }
 
     suspend fun checkHeaders() {
         thumbnailDao.getHeaders().forEach {
@@ -64,6 +67,7 @@ class LocalRepositoryImpl constructor(
         }
     }
 
+    //마지막 검색일자 5분 이상 인지 확인
     private suspend fun checkHeaderTime(header: Header): Boolean {
         if(compareDate(header.lastDate) > 5) {
             thumbnailDao.deleteHeaderByKey(header.keyword)
@@ -71,5 +75,22 @@ class LocalRepositoryImpl constructor(
         }
         return true
     }
+
+    override suspend fun getStorages(): List<Thumbnail> = withContext(ioDispatcher) {
+        val thumbnails = mutableListOf<Thumbnail>()
+        try{
+            thumbnailDao.getStorages()?.forEach { thumbnails.add(Thumbnail(it.url,"", it.date,true)) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        thumbnails.sortBy { it.date }
+        return@withContext thumbnails
+    }
+
+    override suspend fun getStorageByURL(url: String): Storage? = withContext(ioDispatcher) { thumbnailDao.getStorageByURL(url) }
+
+    override suspend fun deleteStorageByURL(url: String) = withContext(ioDispatcher) { thumbnailDao.deleteStorageByURL(url) }
+
+    override suspend fun insertStorage(url: String) = withContext(ioDispatcher) { thumbnailDao.insertStorage(Storage(url, Date())) }
 
 }

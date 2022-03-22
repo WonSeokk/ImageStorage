@@ -46,6 +46,11 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        scope.launch { mainViewModel.getStorage() }
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
