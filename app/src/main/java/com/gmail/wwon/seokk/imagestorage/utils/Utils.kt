@@ -5,6 +5,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.gmail.wwon.seokk.imagestorage.ImageStorageApp
+import com.google.android.material.badge.BadgeDrawable
 import java.util.*
 
 
@@ -54,4 +55,11 @@ fun Context.hideKeyboard(view: View) {
     imm.hideSoftInputFromWindow(view.windowToken, 0)
     view.clearFocus()
 }
+
+
+fun BadgeDrawable.setBadge(num: Int) =
+    this.apply {
+        isVisible = num != 0
+        number = num
+    }
 

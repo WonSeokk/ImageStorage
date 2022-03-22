@@ -32,6 +32,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch { localRepository.clearHeader() }
     }
 
+    var markClickListener: ((Thumbnail) -> Unit)? = null
+
     val searchText = MutableLiveData<String>().apply { value = "" }
 
     val request = ReqThumbnail.EMPTY
@@ -62,7 +64,7 @@ class MainViewModel @Inject constructor(
 
 
     fun searchThumbnail(text: String, isPage: Boolean, isSwipe: Boolean, view: View?) = viewModelScope.launch {
-        //이미 로딩 중이면 return
+        //로딩 중이면 return
         if(isPaging.value!! || isSwiping.value!! || isProgress.value!!) return@launch
         //검색어 빈값 return
         if(text.isEmpty()) {
@@ -98,18 +100,14 @@ class MainViewModel @Inject constructor(
     }
 
     fun clickBookmark(thumbnail: Thumbnail) = viewModelScope.launch {
-        //이미 로딩 중이면 return
+        //로딩 중이면 return
         if(isPaging.value!! || isSwiping.value!! || isProgress.value!!) return@launch
-
         if(thumbnail.isStored)
             localRepository.deleteStorageByURL(thumbnail.url)
         else
             localRepository.insertStorage(thumbnail.url)
-
-        localRepository.getThumbnails(request.query)?.let { _thumbnailList.value = it.thumbnails.sortedByDescending { s -> s.date } }
         getStorage()
     }
-
 
 
     //검색 키보드 엔터 키 리스너

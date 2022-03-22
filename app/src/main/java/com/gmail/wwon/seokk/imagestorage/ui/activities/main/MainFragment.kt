@@ -1,6 +1,7 @@
 package com.gmail.wwon.seokk.imagestorage.ui.activities.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,7 +77,6 @@ class MainFragment: Fragment() {
             SEARCH_PAGE -> bindSearch()
             STORAGE_PAGE -> bindStorage()
         }
-
     }
 
     //메모리 누수 방지
@@ -129,6 +129,14 @@ class MainFragment: Fragment() {
                     } else visibility = View.GONE
                 }
                 thumbnailAdapter.update(it)
+            }
+
+            markClickListener = { thumbnail ->
+                thumbnailAdapter.currentList.find { it.url == thumbnail.url }?.let {
+                    val index = thumbnailAdapter.currentList.indexOf(it)
+                    it.isStored = !thumbnail.isStored
+                    thumbnailAdapter.notifyItemChanged(index)
+                }
             }
         }
     }

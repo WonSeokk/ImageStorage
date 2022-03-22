@@ -1,8 +1,6 @@
 package com.gmail.wwon.seokk.imagestorage.ui.activities.main.adapter
 
 import android.view.LayoutInflater
-import android.view.OnReceiveContentListener
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -28,6 +26,7 @@ class ThumbnailAdapter(val mainViewModel: MainViewModel) :
 
     class ViewHolder private constructor(private val binding: ItemThumbnailBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -42,7 +41,7 @@ class ThumbnailAdapter(val mainViewModel: MainViewModel) :
                 itemView.context.imageLoader().loadImage(item.url, ivThumbnail)
                 itemView.setOnClickListener {
                     mainViewModel.clickBookmark(item)
-                    item.isStored = !item.isStored
+                    mainViewModel.markClickListener?.invoke(item)
                 }
             }
         }

@@ -6,12 +6,15 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.gmail.wwon.seokk.imagestorage.R
 import com.gmail.wwon.seokk.imagestorage.databinding.ActivityMainBinding
 import com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel
+import com.gmail.wwon.seokk.imagestorage.utils.setBadge
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +45,14 @@ class MainActivity: AppCompatActivity() {
                 this@MainActivity.pagerAdapter = ViewPagerAdapter(this@MainActivity)
                 adapter = this@MainActivity.pagerAdapter
             }
-            TabLayoutMediator(tab, viewPager) { tab, position -> tab.text = pageList[position].title }.attach()
+            TabLayoutMediator(tab, viewPager) { tab, position -> tab.text = pageList[position].title
+                tab.orCreateBadge.apply {
+                    this.badgeTextColor = ContextCompat.getColor(this@MainActivity, android.R.color.white)
+                    this.isVisible = false
+                }}.attach()
+        }
+        mainViewModel.storageList.observe(this) {
+            binding.tab.getTabAt(pageList.indexOf(Tab(resources.getString(R.string.title_storage), MainFragment.STORAGE_PAGE)))?.badge?.setBadge(it.size)
         }
     }
 

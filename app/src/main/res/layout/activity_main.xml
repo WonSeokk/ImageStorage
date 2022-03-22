@@ -41,7 +41,9 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/white_black">
+                    android:background="@color/white_black"
+                    android:clipToPadding="false"
+                    android:clipChildren="false">
 
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tab"
