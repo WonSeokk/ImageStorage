@@ -3,12 +3,15 @@ package com.gmail.wwon.seokk.imagestorage.data.api
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.gmail.wwon.seokk.imagestorage.R
 import com.gmail.wwon.seokk.imagestorage.data.DataResult
 import com.gmail.wwon.seokk.imagestorage.data.api.models.ReqThumbnail
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepository
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepositoryImpl
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.HeaderAndThumbnails
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
+import com.gmail.wwon.seokk.imagestorage.utils.networkManager
+import com.gmail.wwon.seokk.imagestorage.utils.toast
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,10 +19,14 @@ import kotlinx.coroutines.flow.flowOn
 
 @RequiresApi(Build.VERSION_CODES.M)
 class ApiRepositoryImpl constructor(
+    private val application: Application,
     private val apiService: ApiService,
     private val localRepository: LocalRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ApiRepository {
+    companion object {
+        const val NO_NETWORK = "NO_NETWORK"
+    }
 
     override suspend fun getThumbnails(request: ReqThumbnail, isPage: Boolean): Flow<DataResult<List<Thumbnail>>> = flow {
         try {
@@ -29,6 +36,14 @@ class ApiRepositoryImpl constructor(
 
             //키워드 이전 기록 확인
             localRepository.getThumbnails(request.query)?.let { data = it }
+
+            //오프라인 일때
+            if(!application.networkManager().checkNetworkState()) {
+                thumbnails.addAll(data.thumbnails)
+                thumbnails.sortByDescending { s -> s.date }
+                emit(DataResult.Success(thumbnails))
+                throw Exception(NO_NETWORK)
+            }
 
             //검색 기록 없고, 페이징 스크롤 일때 실행
             if((data.header.iPage == 0 && data.header.vPage == 0) || isPage) {

@@ -14,9 +14,9 @@ data class ReqThumbnail (
     var query: String,
     val sort: String? = "recency",
     var page: Int = 1,
-    val size: Int? = 9
+    val size: Int? = 15
 ) {
     companion object {
-        val EMPTY = ReqThumbnail("","recency", 1, 9)
+        val EMPTY = ReqThumbnail("","recency", 1, 15)
     }
 }

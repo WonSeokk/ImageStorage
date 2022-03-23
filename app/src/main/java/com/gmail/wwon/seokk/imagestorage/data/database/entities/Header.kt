@@ -5,6 +5,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
+/**
+ * Header 정보
+ * @param keyword: 검색 한 Keyword
+ * @param iPage: 최근 image 페이지
+ * @param vPage: 최근 vclip 페이지
+ * @param iIsEnd: 마지막 image 페이지 인지 ?
+ * @param vIsEnd: 마지막 vclip 페이지 인지 ?
+ * @param lastDate: 최근 검색 날
+ */
 @Entity(tableName = "header")
 data class Header (
     @PrimaryKey @ColumnInfo(name = "keyword") var keyword: String = "",

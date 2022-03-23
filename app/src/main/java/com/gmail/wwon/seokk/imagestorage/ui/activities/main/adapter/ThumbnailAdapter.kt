@@ -1,7 +1,9 @@
 package com.gmail.wwon.seokk.imagestorage.ui.activities.main.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +12,7 @@ import com.gmail.wwon.seokk.imagestorage.databinding.ItemThumbnailBinding
 import com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel
 import com.gmail.wwon.seokk.imagestorage.utils.imageLoader
 
+@RequiresApi(Build.VERSION_CODES.M)
 class ThumbnailAdapter(val mainViewModel: MainViewModel) :
     ListAdapter<Thumbnail, ThumbnailAdapter.ViewHolder>(ThumbnailDiffCallback) {
 
@@ -41,7 +44,6 @@ class ThumbnailAdapter(val mainViewModel: MainViewModel) :
                 itemView.context.imageLoader().loadImage(item.url, ivThumbnail)
                 itemView.setOnClickListener {
                     mainViewModel.clickBookmark(item)
-                    mainViewModel.markClickListener?.invoke(item)
                 }
             }
         }

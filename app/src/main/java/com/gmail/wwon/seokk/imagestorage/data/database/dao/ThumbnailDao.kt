@@ -24,9 +24,6 @@ interface ThumbnailDao {
     @Update
     suspend fun updateHeader(header: Header)
 
-    @Query("DELETE FROM header")
-    suspend fun clearHeader()
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertThumbnails(thumbnails: List<Thumbnail>)
 

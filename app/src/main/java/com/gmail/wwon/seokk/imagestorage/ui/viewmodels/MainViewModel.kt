@@ -1,8 +1,10 @@
 package com.gmail.wwon.seokk.imagestorage.ui.viewmodels
 
 import android.app.Application
+import android.os.Build
 import android.view.KeyEvent
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -13,14 +15,18 @@ import com.gmail.wwon.seokk.imagestorage.data.api.models.ReqThumbnail
 import com.gmail.wwon.seokk.imagestorage.data.database.LocalRepository
 import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
 import com.gmail.wwon.seokk.imagestorage.utils.hideKeyboard
+import com.gmail.wwon.seokk.imagestorage.utils.networkManager
 import com.gmail.wwon.seokk.imagestorage.utils.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import javax.inject.Inject
 
 @HiltViewModel
+@RequiresApi(Build.VERSION_CODES.M)
 class MainViewModel @Inject constructor(
     application: Application,
     private val apiRepository: ApiRepository,
@@ -28,8 +34,9 @@ class MainViewModel @Inject constructor(
 ) : BaseViewModel(application) {
 
     init {
-        //데이터 기록 정보 초기화
-        viewModelScope.launch { localRepository.clearHeader() }
+        //데이터 기록 정보 확인
+        viewModelScope.launch { localRepository.checkHeaders() }
+        viewModelScope.launch { getStorage() }
     }
 
     var markClickListener: ((Thumbnail) -> Unit)? = null
@@ -63,6 +70,7 @@ class MainViewModel @Inject constructor(
         get() = _storageList
 
 
+    //Thumbnail 검색
     fun searchThumbnail(text: String, isPage: Boolean, isSwipe: Boolean, view: View?) = viewModelScope.launch {
         //로딩 중이면 return
         if(isPaging.value!! || isSwiping.value!! || isProgress.value!!) return@launch
@@ -95,10 +103,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getStorage() = viewModelScope.launch {
+    //내 보관함
+    private fun getStorage() = viewModelScope.launch {
         localRepository.getStorages()?.let { _storageList.value = it.toMutableList() }
     }
 
+    //Bookmark Click
     fun clickBookmark(thumbnail: Thumbnail) = viewModelScope.launch {
         //로딩 중이면 return
         if(isPaging.value!! || isSwiping.value!! || isProgress.value!!) return@launch
@@ -107,6 +117,7 @@ class MainViewModel @Inject constructor(
         else
             localRepository.insertStorage(thumbnail.url)
         getStorage()
+        markClickListener?.invoke(thumbnail)
     }
 
 

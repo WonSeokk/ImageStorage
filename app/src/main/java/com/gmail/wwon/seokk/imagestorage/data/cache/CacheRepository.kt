@@ -12,8 +12,12 @@ class CacheRepository constructor(
     }
 
     //메모리캐시 -> 디스크캐시 차례대로 확인
+    //메모리에 없고 디스크에 있으면 메모리 저장 후 리턴
     override fun get(url: String): Bitmap? {
-        return memoryCache.get(url)?:diskCache.get(url)
+        return memoryCache.get(url)?:diskCache.get(url)?.let {
+            memoryCache.put(url, it)
+            it
+        }
     }
 
     override fun remove(url: String) {

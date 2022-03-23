@@ -1,6 +1,5 @@
 package com.gmail.wwon.seokk.imagestorage.data.database
 
-import com.gmail.wwon.seokk.imagestorage.data.DataResult
 import com.gmail.wwon.seokk.imagestorage.data.api.models.Meta
 import com.gmail.wwon.seokk.imagestorage.data.api.models.ReqThumbnail
 import com.gmail.wwon.seokk.imagestorage.data.database.dao.ThumbnailDao
@@ -59,9 +58,7 @@ class LocalRepositoryImpl constructor(
 
     override suspend fun saveThumbnails(thumbnails: List<Thumbnail>) = withContext(ioDispatcher) { thumbnailDao.insertThumbnails(thumbnails) }
 
-    override suspend fun clearHeader() = withContext(ioDispatcher) { thumbnailDao.clearHeader() }
-
-    suspend fun checkHeaders() {
+    override suspend fun checkHeaders() {
         thumbnailDao.getHeaders().forEach {
             checkHeaderTime(it)
         }

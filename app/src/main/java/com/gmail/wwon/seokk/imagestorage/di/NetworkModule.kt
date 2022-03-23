@@ -34,12 +34,13 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideApiRepository(
+        application: Application,
         @Api apiService: ApiService,
         localRepository: LocalRepository,
         ioDispatcher: CoroutineDispatcher
     ): ApiRepository {
         return ApiRepositoryImpl(
-            apiService, localRepository, ioDispatcher
+            application, apiService, localRepository, ioDispatcher
         )
     }
 

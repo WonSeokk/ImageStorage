@@ -1,30 +1,27 @@
 package com.gmail.wwon.seokk.imagestorage.ui.activities.main
 
-import android.content.Context
+import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.gmail.wwon.seokk.imagestorage.R
+import com.gmail.wwon.seokk.imagestorage.data.api.ApiRepositoryImpl
 import com.gmail.wwon.seokk.imagestorage.databinding.ActivityMainBinding
 import com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel
 import com.gmail.wwon.seokk.imagestorage.utils.setBadge
-import com.google.android.material.badge.BadgeDrawable
+import com.gmail.wwon.seokk.imagestorage.utils.toast
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.M)
 class MainActivity: AppCompatActivity() {
 
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
@@ -51,22 +48,15 @@ class MainActivity: AppCompatActivity() {
                     this.isVisible = false
                 }}.attach()
         }
-        mainViewModel.storageList.observe(this) {
-            binding.tab.getTabAt(pageList.indexOf(Tab(resources.getString(R.string.title_storage), MainFragment.STORAGE_PAGE)))?.badge?.setBadge(it.size)
+        mainViewModel.apply {
+            storageList.observe(this@MainActivity) {
+                binding.tab.getTabAt(pageList.indexOf(Tab(resources.getString(R.string.title_storage), MainFragment.STORAGE_PAGE)))?.badge?.setBadge(it.size)
+            }
+            errMsg.observe(this@MainActivity) {
+                if(it == ApiRepositoryImpl.NO_NETWORK) toast(this@MainActivity.getString(R.string.msg_no_network))
+            }
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        scope.launch { mainViewModel.getStorage() }
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-        return true
-    }
-
 
     private inner class ViewPagerAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = pageList.size

@@ -53,7 +53,7 @@
                         app:tabTextColor="@color/black_white"
                         app:tabGravity="center"
                         app:tabIndicatorGravity="stretch"
-                        app:tabSelectedTextColor="@color/white_black"
+                        app:tabSelectedTextColor="@android:color/black"
                         app:tabIndicatorColor="@color/primaryColor"
                         app:tabIndicatorAnimationMode="elastic"
                         app:tabIndicator="@drawable/background_tab_item" />

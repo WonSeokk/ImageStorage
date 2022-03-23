@@ -1,10 +1,12 @@
 package com.gmail.wwon.seokk.imagestorage.ui.activities.main
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,6 +24,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.M)
 class MainFragment: Fragment() {
     companion object {
         private const val PAGE = "PAGE"
@@ -79,9 +82,9 @@ class MainFragment: Fragment() {
         }
     }
 
-    //메모리 누수 방지
     override fun onDestroyView() {
         super.onDestroyView()
+        //메모리 누수 방지
         viewDataBinding = null
     }
 
@@ -131,6 +134,7 @@ class MainFragment: Fragment() {
                 thumbnailAdapter.update(it)
             }
 
+            //아이템 클릭 Listener
             markClickListener = { thumbnail ->
                 thumbnailAdapter.currentList.find { it.url == thumbnail.url }?.let {
                     val index = thumbnailAdapter.currentList.indexOf(it)

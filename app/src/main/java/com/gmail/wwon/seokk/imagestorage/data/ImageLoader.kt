@@ -29,7 +29,7 @@ class ImageLoader constructor(
                 imageview.setImageBitmap(it)
                 return@launch
             } ?: run {
-                //Default image 넣고 URL -> Bitmap 이미지 가져옴
+                //Default image 넣고 URL -> Bitmap 이미지 가져옮
                 imageview.tag = url
                 imageview.setImageResource(R.drawable.ic_search_image)
                 this@ImageLoader.download(url).collect { bitmap ->

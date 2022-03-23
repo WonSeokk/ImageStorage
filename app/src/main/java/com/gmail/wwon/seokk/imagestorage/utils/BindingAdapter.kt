@@ -18,13 +18,18 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-
+/**
+ * visibility
+ */
 @BindingAdapter("android:toVisible")
 fun View.setVisible(value: Boolean) {
     isVisible = value
     isGone = !value
 }
 
+/**
+ * 날짜 Format
+ */
 @SuppressLint("SimpleDateFormat")
 @BindingAdapter("android:dateFormat")
 fun AppCompatTextView.dateFormat(date: Date) {
@@ -47,9 +52,15 @@ fun TextInputLayout.setEndIconClick(onClickListener: View.OnClickListener) {
     setEndIconOnClickListener(onClickListener)
 }
 
+/**
+ * SwipeLayout Spinner 색상
+ */
 @BindingAdapter("android:setSpinnerColor")
 fun SwipeRefreshLayout.setSpinner(color: Int) = setColorSchemeColors(color, color, color)
 
+/**
+ * ImageView bookMark 표시
+ */
 @BindingAdapter("android:setSrc")
 fun AppCompatImageView.setSrc(value: Boolean) {
     if(value) setColorFilter(ContextCompat.getColor(context, R.color.primaryColor), android.graphics.PorterDuff.Mode.SRC_IN)

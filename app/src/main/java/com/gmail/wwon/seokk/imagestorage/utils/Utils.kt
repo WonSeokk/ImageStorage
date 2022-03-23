@@ -56,7 +56,9 @@ fun Context.hideKeyboard(view: View) {
     view.clearFocus()
 }
 
-
+/**
+ * Tab Badge
+ */
 fun BadgeDrawable.setBadge(num: Int) =
     this.apply {
         isVisible = num != 0

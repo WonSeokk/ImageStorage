@@ -24,6 +24,5 @@ class ImageStorageApp: Application() {
         diskCache = DiskCache(this)
         cacheRepository = CacheRepository(diskCache, memoryCache)
         imageLoader = ImageLoader(cacheRepository)
-
     }
 }
