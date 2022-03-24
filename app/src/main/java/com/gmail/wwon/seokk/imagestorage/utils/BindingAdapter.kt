@@ -35,7 +35,7 @@ fun View.setVisible(value: Boolean) {
 fun AppCompatTextView.dateFormat(date: Date) {
     text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault())
-        val formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm:ss", Locale.KOREA)
+        val formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm:ss", Locale.getDefault())
         formatter.format(dateTime)
     } else {
         val formatter = SimpleDateFormat("yy.MM.dd HH:mm:ss", Locale.getDefault())
