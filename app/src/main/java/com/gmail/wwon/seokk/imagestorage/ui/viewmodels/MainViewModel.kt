@@ -36,6 +36,7 @@ class MainViewModel @Inject constructor(
     init {
         //데이터 기록 정보 확인
         viewModelScope.launch { localRepository.checkHeaders() }
+        //내 보관함
         viewModelScope.launch { getStorage() }
     }
 
@@ -112,12 +113,16 @@ class MainViewModel @Inject constructor(
     fun clickBookmark(thumbnail: Thumbnail) = viewModelScope.launch {
         //로딩 중이면 return
         if(isPaging.value!! || isSwiping.value!! || isProgress.value!!) return@launch
+        markClickListener?.invoke(thumbnail)
+    }
+
+    //내 보관함 업데이트
+    fun changeStorage(thumbnail: Thumbnail) = viewModelScope.launch {
         if(thumbnail.isStored)
             localRepository.deleteStorageByURL(thumbnail.url)
         else
             localRepository.insertStorage(thumbnail.url)
         getStorage()
-        markClickListener?.invoke(thumbnail)
     }
 
 

@@ -1,16 +1,19 @@
 package com.gmail.wwon.seokk.imagestorage.data
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.*
 import androidx.appcompat.widget.AppCompatImageView
 import com.gmail.wwon.seokk.imagestorage.R
 import com.gmail.wwon.seokk.imagestorage.data.cache.CacheRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import java.net.URL
+
 
 class ImageLoader constructor(
     private val cache: CacheRepository,
@@ -29,7 +32,7 @@ class ImageLoader constructor(
                 imageview.setImageBitmap(it)
                 return@launch
             } ?: run {
-                //Default image 넣고 URL -> Bitmap 이미지 가져옮
+                //Default image 넣고 URL -> Bitmap(RGB565) 이미지 가져옮
                 imageview.tag = url
                 imageview.setImageResource(R.drawable.ic_search_image)
                 this@ImageLoader.download(url).collect { bitmap ->
@@ -37,9 +40,11 @@ class ImageLoader constructor(
                         when (bitmap) {
                             is DataResult.Success -> {
                                 //Bitmap 변환 성공 시 tag 비교 후, setImage & 캐시 추가
-                                if (imageview.tag == url)
-                                    imageview.setImageBitmap(bitmap.data)
-                                cache.put(url, bitmap.data)
+                                convert(bitmap.data, Bitmap.Config.RGB_565)?.let {
+                                    if (imageview.tag == url)
+                                        imageview.setImageBitmap(it)
+                                    cache.put(url, bitmap.data)
+                                }?:imageview.setImageResource(R.drawable.ic_no_image)
                             }
                             //실패 Default 이미지
                             else -> imageview.setImageResource(R.drawable.ic_no_image)
@@ -51,7 +56,7 @@ class ImageLoader constructor(
     }
 
     /**
-     * @param url: URL -> Bitmap 변환
+     * URL -> Bitmap 변환
      */
     private suspend fun download(url: String): Flow<DataResult<Bitmap>> = flow {
         val bitmap: Bitmap?
@@ -62,4 +67,16 @@ class ImageLoader constructor(
             emit(DataResult.Error(e))
         }
     }.flowOn(ioDispatcher)
+
+    /**
+     * Bitmap RGB565 변환
+     */
+    private fun convert(bitmap: Bitmap, config: Bitmap.Config): Bitmap? {
+        val convertedBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, config)
+        val canvas = Canvas(convertedBitmap)
+        val paint = Paint()
+        paint.color = Color.BLACK
+        canvas.drawBitmap(bitmap, 0f, 0f, paint)
+        return convertedBitmap
+    }
 }

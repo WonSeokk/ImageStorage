@@ -16,7 +16,6 @@
         android:background="@color/white_black">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_tab"
@@ -28,44 +27,37 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white_black"
                 android:elevation="@dimen/dimen_0dp"
+                app:title="@string/app_name"
                 app:layout_scrollFlags="scroll|enterAlways"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/dimen_2dp"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="@dimen/dimen_2dp"
                     android:layout_weight="1"
-                    android:background="@color/white_black"
-                    android:clipToPadding="false"
-                    android:clipChildren="false">
+                    app:tabBackground="@color/white_black"
+                    app:tabTextColor="@color/black_white"
+                    app:tabGravity="fill"
+                    app:tabIndicatorGravity="stretch"
+                    app:tabSelectedTextColor="@android:color/black"
+                    app:tabIndicatorColor="@color/primaryColor"
+                    app:tabIndicatorAnimationMode="elastic"
+                    app:tabIndicator="@drawable/background_tab_item"/>
 
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/tab"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        app:tabBackground="@color/white_black"
-                        app:tabTextColor="@color/black_white"
-                        app:tabGravity="center"
-                        app:tabIndicatorGravity="stretch"
-                        app:tabSelectedTextColor="@android:color/black"
-                        app:tabIndicatorColor="@color/primaryColor"
-                        app:tabIndicatorAnimationMode="elastic"
-                        app:tabIndicator="@drawable/background_tab_item" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/black_white"
-                    android:textSize="@dimen/font_18sp"/>
+                    android:layout_weight="1"/>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.viewpager2.widget.ViewPager2

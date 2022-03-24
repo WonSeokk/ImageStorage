@@ -17,13 +17,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:background="@drawable/background_image">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_thumbnail"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_search_image"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,10 +44,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dimen_2dp"
-                    android:background="@android:color/darker_gray"
+                    android:background="@drawable/background_tab_item"
                     android:dateFormat="@{thumbnail.date}"
                     android:textSize="@dimen/font_10sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:toVisible="@{thumbnail.keyword != ``}"
                     tools:text="99.01.01 00:00"/>
             </FrameLayout>

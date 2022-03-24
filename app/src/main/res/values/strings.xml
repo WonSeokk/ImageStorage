@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Image Storage</string>
+    <string name="app_name">이미지 검색</string>
     <string name="title_search">검색 결과</string>
     <string name="title_storage">내 보관함</string>
     <string name="text_search">검색</string>

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.gmail.wwon.seokk.imagestorage.R
+import com.gmail.wwon.seokk.imagestorage.data.database.entities.Thumbnail
 import com.gmail.wwon.seokk.imagestorage.databinding.FragmentMainBinding
 import com.gmail.wwon.seokk.imagestorage.ui.activities.main.adapter.ThumbnailAdapter
 import com.gmail.wwon.seokk.imagestorage.ui.viewmodels.MainViewModel
@@ -120,6 +121,7 @@ class MainFragment: Fragment() {
                 layoutSwipe.isEnabled = (scrollView.scrollY == 0)
             }
         }
+
         mainViewModel.apply {
             isProgress.observe(this@MainFragment.viewLifecycleOwner) {
                 if(!it) viewDataBinding!!.scrollView.fullScroll(NestedScrollView.FOCUS_UP)
@@ -136,11 +138,13 @@ class MainFragment: Fragment() {
 
             //아이템 클릭 Listener
             markClickListener = { thumbnail ->
+                val sThumbnail = thumbnail.copy()
                 thumbnailAdapter.currentList.find { it.url == thumbnail.url }?.let {
                     val index = thumbnailAdapter.currentList.indexOf(it)
                     it.isStored = !thumbnail.isStored
                     thumbnailAdapter.notifyItemChanged(index)
                 }
+                changeStorage(sThumbnail)
             }
         }
     }
