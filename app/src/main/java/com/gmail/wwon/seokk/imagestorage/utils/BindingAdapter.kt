@@ -38,9 +38,8 @@ fun AppCompatTextView.dateFormat(date: Date) {
         val formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm:ss", Locale.KOREA)
         formatter.format(dateTime)
     } else {
-        val parser = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.KOREA)
-        val formatter = SimpleDateFormat("yy.MM.dd HH:mm:ss", Locale.KOREA)
-        formatter.format(parser.parse(date.toString()))
+        val formatter = SimpleDateFormat("yy.MM.dd HH:mm:ss", Locale.getDefault())
+        formatter.format(date)
     }
 }
 
