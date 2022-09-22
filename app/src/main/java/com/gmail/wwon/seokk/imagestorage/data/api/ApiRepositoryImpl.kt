@@ -69,13 +69,13 @@ class ApiRepositoryImpl constructor(
                             //Header 업데이트
                             localRepository.saveHeader(request, vclipList.meta, LocalRepositoryImpl.VCLIP)
                             vclipList.vclips.forEach { vclip ->
-                                val isStored = localRepository.getStorageByURL(vclip.thumbnail)?: false == true
+                                val isStored = (localRepository.getStorageByURL(vclip.thumbnail)
+                                    ?: false) == true
                                 thumbnails.add(Thumbnail(vclip.thumbnail, request.query, vclip.datetime, isStored))
                             }
                         }
                     }
                 }
-
                 //thumbnail 결과 save
                 if(thumbnails.size > 0)
                     localRepository.saveThumbnails(thumbnails)
@@ -86,12 +86,10 @@ class ApiRepositoryImpl constructor(
             thumbnails.sortByDescending { s -> s.date }
 
             emit(DataResult.Success(thumbnails))
-
         } catch (e: Exception) {
             emit(DataResult.Error(e))
         } finally {
             emit(DataResult.Loading(false))
         }
     }.flowOn(ioDispatcher)
-
 }

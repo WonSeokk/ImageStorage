@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.gmail.wwon.seokk.imagestorage.R
 import com.gmail.wwon.seokk.imagestorage.data.api.ApiRepositoryImpl
@@ -17,6 +18,7 @@ import com.gmail.wwon.seokk.imagestorage.utils.setBadge
 import com.gmail.wwon.seokk.imagestorage.utils.toast
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.M)
